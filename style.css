@@ -1,10 +1,28 @@
+.GAME{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .game{
+  
   width: 800px;
   height: 400px;
   border: 1px solid rgb(122, 122, 122);
-  margin: auto;
+  margin: 0 auto;
+   position: relative; 
   /* display: flex;
   justify-content: center; */
+}
+
+.wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 #dino{
@@ -18,18 +36,65 @@
   
 }
 
-#cactus{
-  width: 40px;
+ #cactus{
+  width: 60px;
   height: 70px;
-  /* background-image: url('photo_2025-12-31_10-51-16.jpg'); */
-  background: url('писюн.png');
-  background-size: 50px 70px;
+  /* background-image: url('злой бургер.webp'); */
+  background: url('злой бургер.webp');
+  background-size: 60px 70px;
   position: relative;
   top: 280px;
   left: 750px;
 
-  animation: block 1.5s infinite linear;
+     /* animation: block 1.5s infinite linear;    */
+} 
+
+#score{
+  /* position: absolute;
+  top: 0;
+  left: 0; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin-bottom: 20px; */
+  /* background: #000;
+  width: 50px;
+  height: 30px;
+   */
+   /* color: ; */
+  
 }
+
+#start{
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%); 
+  /*  сдвигает кнопку старт на 50%(половину от себя) влево на половину от его собственной ширины */
+}
+
+.text {
+  width: 800px;              /* как у игры */
+  margin: 20px auto 10px;    /* центр + отступ */
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+}
+
+.text-center{
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.text__developer{
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 100px;
+}
+
 
 .jump{
   animation: jump 0.3s linear;
