@@ -56,7 +56,8 @@ function startGame() {
   }
 
 
-
+let currentSpeed = '1.5s';
+let nextSpeed = '1.5s';
 
 let dinoAlive = setInterval(function () {
   // console.log("check");
@@ -91,6 +92,16 @@ let dinoAlive = setInterval(function () {
      console.log("SCORE:", score);
   }
 
+  if (cactusLeft < 0 && currentSpeed !== nextSpeed) {
+    // cactusLeft < 0 = препятствие закончено к след раунду идем  и когда наша обычная скорость
+    // уже не равноа nextSpeed = то только тогда обновляем, что после каждого ухода кактуса
+    // не обновлась скорость
+  cactus.style.animation = 'none'; // полностью останавливаем анимацию
+  cactus.offsetHeight; // принудительный reflow // полностью останавливаем анимацию(без этого склеятся команды)
+  cactus.style.animation = `block ${nextSpeed} infinite linear`; 
+  currentSpeed = nextSpeed;
+}
+
   // 🔁 КАКТУС ПОЯВИЛСЯ ЗАНОВО
   if (cactusLeft > 600) {
     // тут ЕСЛИ ЭТО НЕ ПИСАТЬ, ТО СЧЕТЧИК НА 1 ЗАКАНЧИВАЕТСЯ И НЕ ОБНОВЛЯЕТСЯ, А ТУТ
@@ -98,23 +109,20 @@ let dinoAlive = setInterval(function () {
     //  МОЖНО УЖЕ ОЧКО ПРИБАВЛЯТЬ
     cactusPassed = false;
   }
+
+
   if(gameStarted) {
-    if(score >= 5 && speedLevel === 1){
-      cactus.style.animation = 'block 1.3s infinite linear';
-      speedLevel === 2;
-  } else if(score >= 10 && speedLevel === 2){
-    cactus.style.animation = 'block 1s infinite linear';
-    speedLevel === 3;
-  } else if(score >= 20 && speedLevel === 3) {
-    cactus.style.animation = 'block 0.8s infinite linear';
-    speedLevel === 4;
-  } else if(score >= 30 && speedLevel === 4) {
-    cactus.style.animation = 'block 0.6s infinite linear';
-    speedLevel === 5;
-  } else{
-    cactus.style.animation = 'block 1.5s infinite linear';
-    speedLevel === 1;
-  }
+    if(score >= 20){
+      nextSpeed = '.6s';
+    } else if (score >= 15) {
+      nextSpeed = '.8s';
+    } else if (score >= 10) {
+      nextSpeed = '1s';
+    } else if(score >= 5) {
+       nextSpeed = '1.2s';
+    } else {
+       nextSpeed = '1.5s';
+    }
   }
   
 
