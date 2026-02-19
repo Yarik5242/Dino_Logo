@@ -74,7 +74,7 @@ let dinoAlive = setInterval(function () {
   if (cactusRect.left > dinoRect.right) {
     cactusPassed = false;
   }
-}, 25);
+}, 20);
 
 function updateSpeed() {
   // Логика прогрессии
