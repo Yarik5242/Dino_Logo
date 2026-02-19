@@ -16,117 +16,88 @@ jumpMusic.volume = 0.3;
 deathMusic.volume = 0.3;
 
 let gameStarted = false;
-
-let score = 0;
 let cactusPassed = false;
-// это очки = 0, засчитанный кактус(в начале нет) и конец игры( сначала нет)
-let gameOver = false;
-
-let speedLevel = 1;
-
-
-
-function jump() {
-
-  if (dino.classList != "jump") {
-    dino.classList.add("jump");
-
-    jumpMusic.currentTime = 0;
-    jumpMusic.play();
-
-    setTimeout(function () {
-      dino.classList.remove("jump")
-    }, 300)
-  }
-};
-
-start.addEventListener('click', startGame);
-
-function startGame() {
-    // если игра уже запущена — выходим
-    if(gameStarted) return;
-
-    // помечаем, что игра началась
-    gameStarted = true;
-
-    // запуск анимации(ее изначально оффаем)
-    cactus.style.animation = 'block 1.5s infinite linear';
-    // и тут музон врубается
-    backMusic.play();
-  }
-
-
+let score = 0;
 let currentSpeed = '1.5s';
 let nextSpeed = '1.5s';
 
+function jump() {
+  if (!dino.classList.contains("jump")) {
+    dino.classList.add("jump");
+    jumpMusic.currentTime = 0;
+    jumpMusic.play();
+    setTimeout(() => dino.classList.remove("jump"), 500);
+  }
+}
+
+function startGame() {
+  if (gameStarted) return;
+  gameStarted = true;
+  score = 0;
+  scoreEl.innerText = 'Ваши очки: 0';
+  cactus.style.animation = `block ${currentSpeed} infinite linear`;
+  backMusic.play();
+}
+
+function changeSkin(skin) {
+  dino.style.backgroundImage = `url('${skin}')`;
+}
+
 let dinoAlive = setInterval(function () {
-  // console.log("check");
+  if (!gameStarted) return;
 
-  let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue("top"));
-  // Узнаём где сейчас динозавр по вертикали.
-  // console.log(dinoTop);
-  let cactusLeft = parseInt(window.getComputedStyle(cactus).getPropertyValue("left"));
-  // Узнаём где сейчас кактус по горизонтали.
-  // console.log(cactusLeft)
+  let dinoRect = dino.getBoundingClientRect();
+  let cactusRect = cactus.getBoundingClientRect();
 
-  if (cactusLeft < 50 && cactusLeft > 0 && dinoTop >= 310) {
-    // dinoTop >= 310 это типа момент, когда он начинает прыгать, если он до 310 - 350
-    // то он стоит и удар возможен, если меньше 310, то он прыгнул
-    // ну тут типа если динозавр близко, то столкновение
-
-    // Почему мы НЕ проверяем столкновение, когда dinoTop < 310? Потому что динозавр в воздухе и он перепрыгнул кактус
-    //  значит умирать нельзя
+  // 1. СТОЛКНОВЕНИЕ (getBoundingClientRect — самый точный метод)
+  if (
+    dinoRect.right > cactusRect.left + 15 && 
+    dinoRect.left < cactusRect.right - 15 &&
+    dinoRect.bottom > cactusRect.top + 10
+  ) {
+    deathMusic.currentTime = 0;
     deathMusic.play();
     backMusic.pause();
     alert("Game Over! Score: " + score);
     location.reload();
-  };
+  }
 
-   if (cactusLeft < 0 && !cactusPassed) {
-    //  тут если кактус ушел за экран и не был засчитан cactusPassed, то очко добавляется
+  // 2. СЧЕТЧИК (Когда ПРАВАЯ сторона кактуса ушла левее ЛЕВОЙ стороны дино)
+  if (cactusRect.right < dinoRect.left && !cactusPassed) {
     score++;
     cactusPassed = true;
-    // запоминаем, что кактус был посчитан и идем дальше
-    scoreEl.innerText = 'Ваши очки:' + score;
-    // Показываем счёт на экране.
-     console.log("SCORE:", score);
+    scoreEl.innerText = 'Ваши очки: ' + score;
+    updateSpeed();
   }
 
-  if (cactusLeft < 0 && currentSpeed !== nextSpeed) {
-    // cactusLeft < 0 = препятствие закончено к след раунду идем  и когда наша обычная скорость
-    // уже не равноа nextSpeed = то только тогда обновляем, что после каждого ухода кактуса
-    // не обновлась скорость
-  cactus.style.animation = 'none'; // полностью останавливаем анимацию
-  cactus.offsetHeight; // принудительный reflow // полностью останавливаем анимацию(без этого склеятся команды)
-  cactus.style.animation = `block ${nextSpeed} infinite linear`; 
-  currentSpeed = nextSpeed;
-}
-
-  // 🔁 КАКТУС ПОЯВИЛСЯ ЗАНОВО
-  if (cactusLeft > 600) {
-    // тут ЕСЛИ ЭТО НЕ ПИСАТЬ, ТО СЧЕТЧИК НА 1 ЗАКАНЧИВАЕТСЯ И НЕ ОБНОВЛЯЕТСЯ, А ТУТ
-    //  ЕСЛИ КАКТУС ВЫШЕЛ, ТИПА ДАЛЬШЕ 600 ПИКСЕЛЕЙ(ЕГО СПАВН), ТО СЧЕТЧИК ФАЛС И 
-    //  МОЖНО УЖЕ ОЧКО ПРИБАВЛЯТЬ
+  // 3. СБРОС ФЛАГА (Когда кактус снова вылетает справа)
+  if (cactusRect.left > dinoRect.right) {
     cactusPassed = false;
   }
+}, 10);
 
+function updateSpeed() {
+  // Логика прогрессии
+  if (score >= 20) nextSpeed = '0.7s';
+  else if (score >= 15) nextSpeed = '0.9s';
+  else if (score >= 10) nextSpeed = '1.1s';
+  else if (score >= 5) nextSpeed = '1.3s';
 
-  if(gameStarted) {
-    if(score >= 20){
-      nextSpeed = '.6s';
-    } else if (score >= 15) {
-      nextSpeed = '.8s';
-    } else if (score >= 10) {
-      nextSpeed = '1s';
-    } else if(score >= 5) {
-       nextSpeed = '1.2s';
-    } else {
-       nextSpeed = '1.5s';
-    }
+  if (currentSpeed !== nextSpeed) {
+    // Чтобы плавно сменить скорость, ждем начала нового цикла анимации
+    // Но для простоты сбрасываем сразу:
+    cactus.style.animation = 'none';
+    cactus.offsetHeight; 
+    cactus.style.animation = `block ${nextSpeed} infinite linear`;
+    currentSpeed = nextSpeed;
   }
-  
+}
 
-}, 10); 
+// Слушатели событий
+start.addEventListener('click', startGame);
+document.addEventListener("keydown", (e) => { if(gameStarted) jump(); });
+document.addEventListener("touchstart", (e) => { if(gameStarted) jump(); });
+
 
 document.addEventListener("keydown", function(event) {
   if(!gameStarted) return;
@@ -142,9 +113,9 @@ document.addEventListener("keydown", function(event) {
 
 document.addEventListener("touchstart", function (event) {
   jump();
-});
+}); // это прыжок для мобилы ( вместо key тут touchstart)
 
 
 
 
-
+// ПЕЕЕЕРЕЕЕЕЕЕЕЕПИИИИИИИСАААААААТЬЬЬЬЬЬЬЬЬЬЬЬЬЬ ИЗМЕНЕНИЯ АНИМАЦИИ!!!!!!!!!!!1

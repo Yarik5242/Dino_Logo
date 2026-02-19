@@ -7,47 +7,75 @@
   width: 100%;
 }
 
-.game{
-  
-  width: 800px;
-  height: 400px;
-  border: 1px solid rgb(122, 122, 122);
+.skin-select {
+  margin-bottom: 5vh;
+  display: flex;
+  column-gap: 1vw;
+}
+
+.game {
+  width: 100%;
+  max-width: 800px; /* На ПК будет 800, на мобиле растянется по экрану */
+  height: 200px; /* Уменьшим высоту, чтобы прыжок выглядел адекватно */
+  border: 1px solid #7a7a7a;
   margin: 0 auto;
-   position: relative; 
-  /* display: flex;
-  justify-content: center; */
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.text-center {
+  margin-bottom: 4vh;
+}
+
+#score{
+  font-size: 20px;
+  margin-bottom: 1vh;
+}
+
+p{
+  margin-top: -4.8vh;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+#start {
+  margin-top: 1vh;
+  width: 70px;
+  height: 25px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.skin-btn {
+  width: 120px;
+  height: 50px;
 }
 
 .wrapper{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
-#dino{
+#dino {
   width: 50px;
   height: 50px;
-  /* background-image: url('photo_2025-12-31_10-51-16.jpg'); */
-  background: url('photo_2025-12-31_10-51-16.jpg');
-  background-size: 50px 50px;
-  position: relative;
-  top: 350px;
-  
+  background: url('photo_2025-12-31_10-51-16.jpg') no-repeat center/cover;
+  position: absolute;
+  bottom: 0; /* Прижат к низу */
+  left: 50px;
+  z-index: 2;
 }
 
- #cactus{
-  width: 60px;
-  height: 70px;
-  /* background-image: url('злой бургер.webp'); */
-  background: url('злой бургер.webp');
-  background-size: 60px 70px;
-  position: relative;
-  top: 280px;
-  left: 750px;
-
-     /* animation: block 1.5s infinite linear;    */
-} 
+#cactus {
+  width: 40px;
+  height: 50px;
+  background: url('злой бургер.webp') no-repeat center/cover;
+  position: absolute;
+  bottom: 0;
+  left: 100% ; /* Начало всегда за правой границей */
+}
 
 #score{
   /* position: absolute;
@@ -75,7 +103,7 @@
 }
 
 .text {
-  width: 800px;              /* как у игры */
+  /* width: 800px;              как у игры */
   margin: 20px auto 10px;    /* центр + отступ */
   display: flex;
   justify-content: center;
@@ -85,7 +113,7 @@
 }
 
 .text-center{
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
 }
 
@@ -96,22 +124,92 @@
 }
 
 
-.jump{
-  animation: jump 0.3s linear;
+.jump {
+  /* linear тут не подходит, прыжок должен быть с замедлением вверху */
+  animation: jump 0.5s cubic-bezier(0.1, 0.4, 0.4, 1);
 }
 
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-120px); } /* Подбери высоту под свой кактус */
+  100% { transform: translateY(0); }
+}
+
+@keyframes block {
+  0% { left: 100%; }
+  100% { left: -60px; }
+}
+
+
+@media(max-width: 850px) {
+  .game {
+    width: 500px;
+  }
+
+  /* @keyframes block {
+  0% {
+    left: 420px;
+  }
+
+  100% {
+    left: -50px;
+  }
+}
+
+#cactus {
+  left: 420px;
+} */
+
+.text__developer {
+  margin: 10px 0 20px 0;
+}
+
+}
+
+@media(max-width: 500px) {
+  .game {
+    width: 350px;
+  }
+
+
+  .skin-btn {
+    width: 100px;
+    height: 40px;
+  }
+
+  .skin-select{
+    column-gap: 15px;
+  }
+
+  /* @keyframes block {
+  0% {
+    left: 330px;
+  }
+
+  100% {
+    left: -50px;
+  }
+}
+
+#cactus {
+  left: 320px;
+}
 
 @keyframes jump {
   0% {
     top: 350px;
   }
 
-  30% {
-    top: 290px;
+  20% {
+    top: 270px;
   }
 
-  50% {
-    top: 240px;
+  40% {
+    top: 220px;
+  }
+
+  60% {
+    top: 240px
   }
 
   80% {
@@ -124,12 +222,11 @@
    
 }
 
-@keyframes block {
-  0% {
-    left: 750px;
-  }
+#cactus {
+  width: 40px;
+  height: 50px;
+  top: 300px;
+} */
 
-  100% {
-    left: -50px;
-  }
+
 }
